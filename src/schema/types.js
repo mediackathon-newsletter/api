@@ -14,6 +14,7 @@ module.exports = `
     events: [Event]
     date: DateTime
     type: NewsletterType
+    author: User
   }
 
   type Article {
@@ -32,7 +33,7 @@ module.exports = `
 
   type City {
     id: ID
-    name: City
+    name: String
     districts: [District]
   }
 
@@ -44,6 +45,7 @@ module.exports = `
 
   type Event {
     id: ID
+    category: ID
     newsletter: Newsletter
   }
 
@@ -53,7 +55,6 @@ module.exports = `
     firstname: String
     lastname: String
     email: String
-    password: String
     journalist: Boolean
     biography: String
     linkedin: String
@@ -71,16 +72,26 @@ module.exports = `
     categories: [Category],
     category(id: ID!): Category,
     cities: [City],
-    city: City,
+    city(id: ID!): City,
+    districts(city: ID!): [District],
+    district(id: ID!): District,
     events: [Event],
     event: Event,
     newsletters:  [Newsletter],
     newsletter: Newsletter
     users: [User],
-    user: [User]
+    user: User
   }
 
   type Mutation {
-    createCategory(name: String) : Category
+    signup(firstname: String!, lastname: String!, email: String!, password: String!): User
+    login(email: String!, password: String!) : User
+    logout : User
+    createArticle(newsletter: ID!, category: ID!, title: String!, subtitle: String, text: String!): Article
+    createCategory(name: String!) : Category,
+    createCity(name: String!) : City,
+    createDistrict(name: String!, city: ID!) : District
+    createEvent(newsletter: ID!, category: ID!): Event
+    createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!, author: ID!): Newsletter
   }
 `;
