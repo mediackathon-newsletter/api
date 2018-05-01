@@ -1,36 +1,50 @@
 const models = require('../db/models');
+const AuthService = require('../services/auth');
 
 module.exports = {
   Query: {
     articles: () => [],
     article: () => {},
     categories: () => models.Category.find(),
-    category: (root, { id }) => models.Category.findOne({ _id: id }),
+    category: (rootValue, { id }) => models.Category.findOne({ _id: id }),
     cities: () => models.City.find(),
-    city: (root, { id }) =>
+    city: (rootValue, { id }) =>
       models.City.findOne({ _id: id }).populate('districts'),
-    districts: (root, { city }) => models.District.find({ city }),
-    district: (root, { id }) =>
+    districts: (rootValue, { city }) => models.District.find({ city }),
+    district: (rootValue, { id }) =>
       models.District.findOne({ _id: id }).populate('city'),
     events: () => [],
     event: () => {},
     newsletters: () => [],
     newsletter: () => {},
     users: () => [],
-    user: () => {}
+    user: (rootValue, _, { req }) => {
+      return req.user;
+    }
   },
   Mutation: {
-    createArticle: (root, { newsletter, category, title, subtitle, text }) =>
-      models.Article.create({ newsletter, category, title, subtitle, text }),
-    createCategory: (root, { name }) => models.Category.create({ name }),
-    createCity: (root, { name }) => models.City.create({ name }),
-    createDistrict: (root, { name, city }) =>
+    // Authentication
+    signup: (rootValue, { email, password, firstname, lastname }, { req }) =>
+      AuthService.signup({ email, password, firstname, lastname, req }),
+    login: (rootValue, { email, password }, { req }) =>
+      AuthService.login({ email, password, req }),
+    logout: (rootValue, _, { req }) => {
+      const { user } = req;
+      req.logout();
+      return user;
+    },
+    // Others
+    createArticle: (
+      rootValue,
+      { newsletter, category, title, subtitle, text }
+    ) => models.Article.create({ newsletter, category, title, subtitle, text }),
+    createCategory: (rootValue, { name }) => models.Category.create({ name }),
+    createCity: (rootValue, { name }) => models.City.create({ name }),
+    createDistrict: (rootValue, { name, city }) =>
       models.District.create({ name, city }),
-    createEvent: (root, { newsletter, category }) =>
+    createEvent: (rootValue, { newsletter, category }) =>
       models.Event.create({ newsletter, category }),
-    createNewsletter: (root, { city, date, type, author }) =>
-      models.Newsletter.create({ city, date, type, author }),
-    createUser: (root, { firstname, lastname, email, password }) =>
-      models.User.create({ firstname, lastname, email, password })
+    createNewsletter: (rootValue, { city, date, type, author }) =>
+      models.Newsletter.create({ city, date, type, author })
   }
 };

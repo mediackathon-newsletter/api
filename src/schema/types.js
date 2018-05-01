@@ -55,7 +55,6 @@ module.exports = `
     firstname: String
     lastname: String
     email: String
-    password: String
     journalist: Boolean
     biography: String
     linkedin: String
@@ -81,16 +80,18 @@ module.exports = `
     newsletters:  [Newsletter],
     newsletter: Newsletter
     users: [User],
-    user: [User]
+    user: User
   }
 
   type Mutation {
+    signup(firstname: String!, lastname: String!, email: String!, password: String!): User
+    login(email: String!, password: String!) : User
+    logout : User
     createArticle(newsletter: ID!, category: ID!, title: String!, subtitle: String, text: String!): Article
     createCategory(name: String!) : Category,
     createCity(name: String!) : City,
     createDistrict(name: String!, city: ID!) : District
     createEvent(newsletter: ID!, category: ID!): Event
     createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!, author: ID!): Newsletter
-    createUser(firstname: String!, lastname: String!, email: String!, password: String!, journalist: Boolean): User
   }
 `;
