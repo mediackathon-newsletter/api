@@ -5,4 +5,10 @@ const citySchema = new Schema({
   name: { type: String, required: true, unique: true }
 });
 
+citySchema.virtual('districts', {
+  ref: 'District',
+  localField: '_id',
+  foreignField: 'city'
+});
+
 module.exports = mongoose.model('City', citySchema);
