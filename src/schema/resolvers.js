@@ -38,7 +38,7 @@ module.exports = {
       req.logout();
       return user;
     },
-    // Others
+    // Create
     createArticle: (
       rootValue,
       { newsletter, category, title, subtitle, text }
@@ -53,14 +53,17 @@ module.exports = {
       models.Newsletter.create({ city, date, type, author }),
     createSubscription: (rootValue, { city }, { req }) =>
       models.Subscription.create({ user: req.user.id, city }),
-    deleteSubscription: async (rootValue, { id }, { req }) => {
-      console.log(req.user);
-      const err = await models.Subscription.remove({
+    // Update
+    updateProfile: (rootValue, { user }, { req }) => {
+      return models.User.findOneAndUpdate({ _id: req.user._id }, user, {
+        new: true
+      });
+    },
+    // Delete
+    deleteSubscription: (rootValue, { id }, { req }) =>
+      models.Subscription.remove({
         user: req.user._id,
         _id: id
-      });
-      console.log(err);
-      return { id };
-    }
+      })
   }
 };

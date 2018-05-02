@@ -7,6 +7,21 @@ module.exports = `
     ARTICLES
   }
 
+  input UserInput {
+    firstname: String
+    lastname: String
+    email: String
+    journalist: Boolean
+    biography: String
+    linkedin: String
+    twitter: String
+    facebook: String
+    street: String
+    city: String
+    postalCode: String
+    birthday: DateTime
+  }
+
   type Newsletter {
     id: ID
     articles: [Article]
@@ -94,6 +109,7 @@ module.exports = `
     signup(firstname: String!, lastname: String!, email: String!, password: String!): User
     login(email: String!, password: String!) : User
     logout : User
+
     createArticle(newsletter: ID!, category: ID!, title: String!, subtitle: String, text: String!): Article
     createCategory(name: String!) : Category,
     createCity(name: String!) : City,
@@ -101,6 +117,9 @@ module.exports = `
     createEvent(newsletter: ID!, category: ID!): Event
     createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!, author: ID!): Newsletter
     createSubscription(city: ID!): Subscription,
+
+    updateProfile(user: UserInput!): User
+
     deleteSubscription(id: ID!): Subscription
   }
 `;
