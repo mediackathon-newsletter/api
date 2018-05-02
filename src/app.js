@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
-
+const cors = require('cors');
 // GraphQL dependencies
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const mongoose = require('mongoose');
@@ -33,7 +33,7 @@ app.use(
   session({
     resave: true,
     saveUninitialized: true,
-    secret: 'notthesecret',
+    secret: 'notasecret',
     store: new MongoStore({
       url: MONGO_URL,
       autoReconnect: true
@@ -46,6 +46,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(morgan('dev'));
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://localhost:4000'],
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 app.use(
   '/graphql',

@@ -18,7 +18,11 @@ module.exports = {
     event: (rootValue, { id }) => models.Event.findOne({ _id: id }),
     newsletters: (rootValue, { city }) => models.Newsletter.find({ city }),
     newsletter: (rootValue, { id }) => models.Newsletter.findOne({ _id: id }),
+    subscriptions: (rootValue, _, { req }) =>
+      models.Subscription.find({ user: req.user.id }).populate('city'),
     users: () => models.User.find(),
+    profile: (rootValue, _, { req }) =>
+      models.User.findOne({ _id: req.user.id }),
     user: (rootValue, _, { req }) => {
       return req.user;
     }
@@ -46,6 +50,17 @@ module.exports = {
     createEvent: (rootValue, { newsletter, category }) =>
       models.Event.create({ newsletter, category }),
     createNewsletter: (rootValue, { city, date, type, author }) =>
-      models.Newsletter.create({ city, date, type, author })
+      models.Newsletter.create({ city, date, type, author }),
+    createSubscription: (rootValue, { city }, { req }) =>
+      models.Subscription.create({ user: req.user.id, city }),
+    deleteSubscription: async (rootValue, { id }, { req }) => {
+      console.log(req.user);
+      const err = await models.Subscription.remove({
+        user: req.user._id,
+        _id: id
+      });
+      console.log(err);
+      return { id };
+    }
   }
 };

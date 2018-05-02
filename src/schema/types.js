@@ -49,6 +49,11 @@ module.exports = `
     newsletter: Newsletter
   }
 
+  type Subscription {
+    id: ID
+    city: City
+  }
+
 
   type User {
     id: ID
@@ -78,7 +83,9 @@ module.exports = `
     events(newsletter: ID!): [Event],
     event(id : ID!): Event,
     newsletters(city: ID!):  [Newsletter],
-    newsletter(id: ID!): Newsletter
+    newsletter(id: ID!): Newsletter,
+    subscriptions : [Subscription],
+    profile: User,
     users: [User],
     user: User
   }
@@ -93,5 +100,7 @@ module.exports = `
     createDistrict(name: String!, city: ID!) : District
     createEvent(newsletter: ID!, category: ID!): Event
     createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!, author: ID!): Newsletter
+    createSubscription(city: ID!): Subscription,
+    deleteSubscription(id: ID!): Subscription
   }
 `;
