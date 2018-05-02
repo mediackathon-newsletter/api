@@ -67,18 +67,18 @@ module.exports = `
   }
 
   type Query {
-    articles: [Article],
-    article: Article,
+    articles(newsletter: ID!): [Article],
+    article(id: ID!): Article,
     categories: [Category],
     category(id: ID!): Category,
     cities: [City],
     city(id: ID!): City,
     districts(city: ID!): [District],
     district(id: ID!): District,
-    events: [Event],
-    event: Event,
-    newsletters:  [Newsletter],
-    newsletter: Newsletter
+    events(newsletter: ID!): [Event],
+    event(id : ID!): Event,
+    newsletters(city: ID!):  [Newsletter],
+    newsletter(id: ID!): Newsletter
     users: [User],
     user: User
   }
