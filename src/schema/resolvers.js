@@ -3,8 +3,9 @@ const AuthService = require('../services/auth');
 
 module.exports = {
   Query: {
-    articles: () => [],
-    article: () => {},
+    articles: (rootValue, { newsletter }) =>
+      models.Articles.find({ newsletter }),
+    article: (rootValue, { id }) => models.Article.findOne({ _id: id }),
     categories: () => models.Category.find(),
     category: (rootValue, { id }) => models.Category.findOne({ _id: id }),
     cities: () => models.City.find(),
@@ -13,11 +14,11 @@ module.exports = {
     districts: (rootValue, { city }) => models.District.find({ city }),
     district: (rootValue, { id }) =>
       models.District.findOne({ _id: id }).populate('city'),
-    events: () => [],
-    event: () => {},
-    newsletters: () => [],
-    newsletter: () => {},
-    users: () => [],
+    events: (rootValue, { newsletter }) => models.Event.find({ newsletter }),
+    event: (rootValue, { id }) => models.Event.findOne({ _id: id }),
+    newsletters: (rootValue, { city }) => models.Newsletter.find({ city }),
+    newsletter: (rootValue, { id }) => models.Newsletter.findOne({ _id: id }),
+    users: () => models.User.find(),
     user: (rootValue, _, { req }) => {
       return req.user;
     }
