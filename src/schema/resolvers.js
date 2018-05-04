@@ -60,6 +60,10 @@ module.exports = {
       });
     },
     // Delete
+    deleteCity: (rootValue, { id }) =>
+      models.City.remove({
+        _id: id
+      }),
     deleteSubscription: (rootValue, { id }, { req }) =>
       models.Subscription.remove({
         user: req.user._id,

@@ -120,6 +120,7 @@ module.exports = `
 
     updateProfile(user: UserInput!): User
 
+    deleteCity(id: ID!): City
     deleteSubscription(id: ID!): Subscription
   }
 `;
