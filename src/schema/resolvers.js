@@ -1,7 +1,10 @@
 const models = require('../db/models');
 const AuthService = require('../services/auth');
+const GraphQLIsoDate = require('graphql-iso-date');
 
 module.exports = {
+  DateTime: GraphQLIsoDate,
+
   Query: {
     articles: (rootValue, { newsletter }) =>
       models.Articles.find({ newsletter }),
@@ -17,7 +20,10 @@ module.exports = {
     events: (rootValue, { newsletter }) => models.Event.find({ newsletter }),
     event: (rootValue, { id }) => models.Event.findOne({ _id: id }),
     newsletters: (rootValue, { city }) => models.Newsletter.find({ city }),
-    newsletter: (rootValue, { id }) => models.Newsletter.findOne({ _id: id }),
+    newsletter: (rootValue, { id }) =>
+      models.Newsletter.findOne({ _id: id })
+        .populate('articles')
+        .populate('journalist'),
     subscriptions: (rootValue, _, { req }) =>
       models.Subscription.find({ user: req.user.id }).populate('city'),
     users: () => models.User.find(),
@@ -49,8 +55,8 @@ module.exports = {
       models.District.create({ name, city }),
     createEvent: (rootValue, { newsletter, category }) =>
       models.Event.create({ newsletter, category }),
-    createNewsletter: (rootValue, { city, date, type, author }) =>
-      models.Newsletter.create({ city, date, type, author }),
+    createNewsletter: (rootValue, { city, date, type }, { req }) =>
+      models.Newsletter.create({ city, date, type, journalist: req.user._id }),
     createSubscription: (rootValue, { city }, { req }) =>
       models.Subscription.create({ user: req.user.id, city }),
     // Update

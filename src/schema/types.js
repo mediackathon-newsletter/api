@@ -29,7 +29,7 @@ module.exports = `
     events: [Event]
     date: DateTime
     type: NewsletterType
-    author: User
+    journalist: User
   }
 
   type Article {
@@ -39,6 +39,7 @@ module.exports = `
     subtitle: String
     text: String
     category: Category
+    district: District
   }
 
   type Category {
@@ -115,7 +116,7 @@ module.exports = `
     createCity(name: String!) : City,
     createDistrict(name: String!, city: ID!) : District
     createEvent(newsletter: ID!, category: ID!): Event
-    createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!, author: ID!): Newsletter
+    createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!): Newsletter
     createSubscription(city: ID!): Subscription,
 
     updateProfile(user: UserInput!): User
