@@ -7,6 +7,26 @@ module.exports = `
     ARTICLES
   }
 
+  input ArticleInput {
+
+    newsletter: ID!
+    category: ID!
+    title: String!
+    subtitle: String
+    text: String!
+  }
+
+  input CityInput {
+    id: ID
+    name: String!
+  }
+
+  input DistrictInput {
+    id: ID
+    name: String!
+    city: ID!
+  }
+
   input UserInput {
     firstname: String
     lastname: String
@@ -21,6 +41,15 @@ module.exports = `
     postalCode: String
     birthday: DateTime
   }
+
+  input NewsletterInput {
+    id: ID
+    city: ID!
+    date: DateTime!
+    type: NewsletterType!
+  }
+
+
 
   type Newsletter {
     id: ID
@@ -88,40 +117,50 @@ module.exports = `
   }
 
   type Query {
-    articles(newsletter: ID!): [Article],
-    article(id: ID!): Article,
-    categories: [Category],
-    category(id: ID!): Category,
-    cities: [City],
-    city(id: ID!): City,
-    districts(city: ID!): [District],
-    district(id: ID!): District,
-    events(newsletter: ID!): [Event],
-    event(id : ID!): Event,
-    newsletters(city: ID!):  [Newsletter],
-    newsletter(id: ID!): Newsletter,
-    subscriptions : [Subscription],
-    profile: User,
-    users: [User],
+    articles(newsletter: ID!): [Article]
+    article(id: ID!): Article
+    categories: [Category]
+    category(id: ID!): Category
+    cities: [City]
+    city(id: ID!): City
+    districts(city: ID!): [District]
+    district(id: ID!): District
+    events(newsletter: ID!): [Event]
+    event(id : ID!): Event
+    newsletters(city: ID!):  [Newsletter]
+    newsletter(id: ID!): Newsletter
+    subscriptions : [Subscription]
+    profile: User
+    users: [User]
     user: User
   }
 
   type Mutation {
+
     signup(firstname: String!, lastname: String!, email: String!, password: String!): User
     login(email: String!, password: String!) : User
     logout : User
 
-    createArticle(newsletter: ID!, category: ID!, title: String!, subtitle: String, text: String!): Article
-    createCategory(name: String!) : Category,
-    createCity(name: String!) : City,
-    createDistrict(name: String!, city: ID!) : District
+    createArticle(article: ArticleInput!): Article
+    createCategory(name: String!) : Category
+    createCity(city: CityInput!) : City
+    createDistrict(district: DistrictInput!) : District
     createEvent(newsletter: ID!, category: ID!): Event
-    createNewsletter(city: ID!, date: DateTime!, type: NewsletterType!): Newsletter
-    createSubscription(city: ID!): Subscription,
+    createNewsletter(newsletter: NewsletterInput!, journalist: ID!): Newsletter
+    createSubscription(city: ID!): Subscription
 
+    updateArticle(article: ArticleInput!): Article
+    updateCity(city: CityInput!) : City
+    updateDistrict(district: DistrictInput!): District
+    updateNewsletter(newsletter: NewsletterInput!): Newsletter
     updateProfile(user: UserInput!): User
 
+    deleteArticle(id: ID!): Article
+    deleteCategory(id: ID!): Category
     deleteCity(id: ID!): City
+    deleteDistrict(id: ID!): District
+    deleteNewsletter(id: ID!): Newsletter
     deleteSubscription(id: ID!): Subscription
+
   }
 `;

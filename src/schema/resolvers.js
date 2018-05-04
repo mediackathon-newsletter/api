@@ -45,31 +45,50 @@ module.exports = {
       return user;
     },
     // Create
-    createArticle: (
-      rootValue,
-      { newsletter, category, title, subtitle, text }
-    ) => models.Article.create({ newsletter, category, title, subtitle, text }),
-    createCategory: (rootValue, { name }) => models.Category.create({ name }),
-    createCity: (rootValue, { name }) => models.City.create({ name }),
-    createDistrict: (rootValue, { name, city }) =>
-      models.District.create({ name, city }),
+    createArticle: (rootValue, { article }) => models.Article.create(article),
+    createCategory: (rootValue, { category }) =>
+      models.Category.create(category),
+    createCity: (rootValue, { city }) => models.City.create(city),
+    createDistrict: (rootValue, { district }) =>
+      models.District.create(district),
     createEvent: (rootValue, { newsletter, category }) =>
       models.Event.create({ newsletter, category }),
-    createNewsletter: (rootValue, { city, date, type }, { req }) =>
-      models.Newsletter.create({ city, date, type, journalist: req.user._id }),
+    createNewsletter: (rootValue, { newsletter }, { req }) =>
+      models.Newsletter.create({ newsletter, journalist: req.user._id }),
     createSubscription: (rootValue, { city }, { req }) =>
       models.Subscription.create({ user: req.user.id, city }),
     // Update
+    updateArticle: (rootValue, { article }) =>
+      models.Article.findOneAndUpdate({ _id: article.id }, article, {
+        new: true
+      }),
+    updateCity: (rootValue, { city }) =>
+      models.City.findOneAndUpdate({ _id: city.id }, city, {
+        new: true
+      }),
+    updateDistrict: (rootValue, { district }) =>
+      models.District.findOneAndUpdate({ _id: district.id }, district, {
+        new: true
+      }),
+    updateNewsletter: (rootValue, { newsletter }) =>
+      models.Newsletter.findOneAndUpdate({ _id: newsletter.id }, newsletter, {
+        new: true
+      }),
     updateProfile: (rootValue, { user }, { req }) => {
       return models.User.findOneAndUpdate({ _id: req.user._id }, user, {
         new: true
       });
     },
     // Delete
+    deleteArticle: (rootValue, { id }) => models.Article.remove({ _id: id }),
+    deleteCategory: (rootValue, { id }) => models.Category.remove({ _id: id }),
     deleteCity: (rootValue, { id }) =>
       models.City.remove({
         _id: id
       }),
+    deleteDistrict: (rootValue, { id }) => models.District.remove({ _id: id }),
+    deleteNewsletter: (rootValue, { id }) =>
+      models.Newsletter.remove({ _id: id }),
     deleteSubscription: (rootValue, { id }, { req }) =>
       models.Subscription.remove({
         user: req.user._id,
