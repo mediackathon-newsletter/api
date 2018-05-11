@@ -7,7 +7,9 @@ module.exports = {
 
   Query: {
     articles: (rootValue, { newsletter }) =>
-      models.Articles.find({ newsletter }),
+      models.Article.find({ newsletter })
+        .populate('category')
+        .populate('district'),
     article: (rootValue, { id }) => models.Article.findOne({ _id: id }),
     categories: () => models.Category.find(),
     category: (rootValue, { id }) => models.Category.findOne({ _id: id }),
@@ -22,8 +24,16 @@ module.exports = {
     newsletters: (rootValue, { city }) => models.Newsletter.find({ city }),
     newsletter: (rootValue, { id }) =>
       models.Newsletter.findOne({ _id: id })
-        .populate('articles')
-        .populate('journalist'),
+        .populate({
+          path: 'articles',
+          populate: [
+            { path: 'category', model: 'Category' },
+            { path: 'district', model: 'District' }
+          ]
+        })
+        .populate('city')
+        .populate('journalist')
+        .exec(),
     subscriptions: (rootValue, _, { req }) =>
       models.Subscription.find({ user: req.user.id }).populate('city'),
     users: () => models.User.find(),
@@ -51,10 +61,13 @@ module.exports = {
     createCity: (rootValue, { city }) => models.City.create(city),
     createDistrict: (rootValue, { district }) =>
       models.District.create(district),
-    createEvent: (rootValue, { newsletter, category }) =>
-      models.Event.create({ newsletter, category }),
-    createNewsletter: (rootValue, { newsletter }, { req }) =>
-      models.Newsletter.create({ newsletter, journalist: req.user._id }),
+    createEvent: (rootValue, { event }) => models.Event.create(event),
+    createNewsletter: (rootValue, { newsletter }, { req }) => {
+      return models.Newsletter.create({
+        ...newsletter,
+        journalist: req.user._id
+      });
+    },
     createSubscription: (rootValue, { city }, { req }) =>
       models.Subscription.create({ user: req.user.id, city }),
     // Update
@@ -87,6 +100,7 @@ module.exports = {
         _id: id
       }),
     deleteDistrict: (rootValue, { id }) => models.District.remove({ _id: id }),
+    deleteEvent: (rootValue, { id }) => models.Event.remove({ _id: id }),
     deleteNewsletter: (rootValue, { id }) =>
       models.Newsletter.remove({ _id: id }),
     deleteSubscription: (rootValue, { id }, { req }) =>

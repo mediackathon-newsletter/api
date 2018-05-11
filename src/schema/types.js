@@ -8,8 +8,10 @@ module.exports = `
   }
 
   input ArticleInput {
+    id: ID,
     newsletter: ID!
     category: ID!
+    district: ID!
     title: String!
     subtitle: String
     text: String!
@@ -24,6 +26,16 @@ module.exports = `
     id: ID
     name: String!
     city: ID!
+  }
+
+  input EventInput {
+    district: ID
+    category: ID
+    newsletter: ID!
+    title: String!
+    subtitle: String
+    text: String
+    date: DateTime!
   }
 
   input UserInput {
@@ -89,9 +101,16 @@ module.exports = `
 
   type Event {
     id: ID
-    category: ID
+    district: District
+    category: Category
     newsletter: Newsletter
+    title: String
+    subtitle: String
+    text: String
+    date: DateTime
   }
+
+
 
   type Subscription {
     id: ID
@@ -144,8 +163,8 @@ module.exports = `
     createCategory(name: String!) : Category
     createCity(city: CityInput!) : City
     createDistrict(district: DistrictInput!) : District
-    createEvent(newsletter: ID!, category: ID!): Event
-    createNewsletter(newsletter: NewsletterInput!, journalist: ID!): Newsletter
+    createEvent(event: EventInput!): Event
+    createNewsletter(newsletter: NewsletterInput!): Newsletter
     createSubscription(city: ID!): Subscription
 
     updateArticle(article: ArticleInput!): Article
@@ -158,6 +177,7 @@ module.exports = `
     deleteCategory(id: ID!): Category
     deleteCity(id: ID!): City
     deleteDistrict(id: ID!): District
+    deleteEvent(id: ID!): Event
     deleteNewsletter(id: ID!): Newsletter
     deleteSubscription(id: ID!): Subscription
 
